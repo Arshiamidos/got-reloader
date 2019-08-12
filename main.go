@@ -64,8 +64,6 @@ func main() {
 					syscall.Kill(-pgid, 15) // note the minus sign
 				} else {
 					fmt.Println("err cause ", err)
-					DONE <- true
-					break
 				}
 
 				fmt.Println(
@@ -83,8 +81,6 @@ func main() {
 
 				if err := cmd.Start(); err != nil {
 					log.Fatalf("Start(runner) failed with %s\n", err)
-					DONE <- true
-					break
 				}
 			}
 			time.Sleep(time.Second)

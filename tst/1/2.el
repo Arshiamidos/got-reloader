@@ -4,7 +4,7 @@ import Html
 
 
 add a b =
-    a + b 
+    a + b  
 
 
 result =
