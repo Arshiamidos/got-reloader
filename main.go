@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"strings"
 	"fmt"
 	"log"
 	"os"
@@ -24,12 +23,13 @@ func (i *arrayFlags) Set(value string) error {
 }
 
 var myFlags arrayFlags
+var COMMAND = "/bin/bash"
 
 func CalcHash(s string) string { //get hash of folder and it's contetn
 	out, _ := exec.Command(
-		"sh",
+		COMMAND,
 		"-c",
-		fmt.Sprintf("find %s -type f -print0 | sort -z | xargs -0 shasum | shasum",
+		fmt.Sprintf(" find %s -type f -print0 | sort -z | xargs -0 shasum | shasum",
 			s),
 	).Output()
 	return string(out)
@@ -46,10 +46,10 @@ func main() {
 
 	Output := CalcHash(myFlags[0])
 
-	rn :="-c "+ *runner 
-	args:=strings.Split(rn," ")
-	
-	cmd := exec.Command("sh", args...)
+	//rn :="-c "+ *runner
+	//args:=strings.Split(rn," ")
+
+	cmd := exec.Command(COMMAND, "-c", *runner)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -59,6 +59,7 @@ func main() {
 		fmt.Println("\033[32m** Start Hot Reloading \033[0m")
 		for {
 			Output := CalcHash(myFlags[0])
+			//fmt.Println(">>",Output);
 			if *init != Output {
 				*init = Output
 
@@ -75,11 +76,11 @@ func main() {
 						cmd.Process.Pid,
 						os.Getpid(),
 					),
-				) 
-				rn :="-c "+ *runner 
-				args:=strings.Split(rn," ")
+				)
+				//rn :="-c "+ *runner
+				//args:=strings.Split(rn," ")
 
-				cmd = exec.Command("sh", args...)
+				cmd = exec.Command(COMMAND, "-c", *runner)
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				cmd.Stdin = os.Stdin
