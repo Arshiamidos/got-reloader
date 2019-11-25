@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"strings"
 	"fmt"
 	"log"
 	"os"
@@ -45,7 +46,10 @@ func main() {
 
 	Output := CalcHash(myFlags[0])
 
-	cmd := exec.Command("sh", "-c", *runner)
+	rn :="-c "+ *runner 
+	args:=strings.Split(rn," ")
+	
+	cmd := exec.Command("sh", args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -71,8 +75,11 @@ func main() {
 						cmd.Process.Pid,
 						os.Getpid(),
 					),
-				)
-				cmd = exec.Command("sh", "-c", *runner)
+				) 
+				rn :="-c "+ *runner 
+				args:=strings.Split(rn," ")
+
+				cmd = exec.Command("sh", args...)
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				cmd.Stdin = os.Stdin
